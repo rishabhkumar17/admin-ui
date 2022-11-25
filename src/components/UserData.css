@@ -1,0 +1,8 @@
+.save-button {
+  font-size: 16px;
+  width: 50px;
+  height: 30px;
+  color: white;
+  background-color: blue;
+  border: 1px solid blue;
+}

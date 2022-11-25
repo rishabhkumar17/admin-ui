@@ -1,9 +1,11 @@
 import './Header.css';
 
-const Header = () => {
+const Header = ({ handleRestore }) => {
   return (
     <div className="header">
-      <h2 className="header-title">Admin UI</h2>
+      <h2 className="header-title" onClick={handleRestore}>
+        Admin UI
+      </h2>
       <input
         placeholder="Search by name, email or role"
         name="search"
