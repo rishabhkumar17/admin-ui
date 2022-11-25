@@ -1,7 +1,13 @@
-import './App.css'
+import React from 'react';
+import './App.css';
+import Users from './components/Users';
 
 function App() {
-  return <div className="App">App</div>
+  return (
+    <React.Fragment>
+      <Users />
+    </React.Fragment>
+  );
 }
 
-export default App
+export default App;
