@@ -8,7 +8,8 @@
   cursor: pointer;
   font-size: 2em;
   font-weight: 700;
-  color: teal;
+  color: #3a5cbf;
+  margin: 10px 0 10px 0;
 }
 
 .search-bar {

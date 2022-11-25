@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from './Header';
 import UserData from './UserData';
+import Pagination from './Pagination';
 import { config } from '../App';
 import './Users.css';
 
@@ -31,6 +32,9 @@ const Users = () => {
   const [userPerPage, setUserPerPage] = useState(10);
   const [edit, setEdit] = useState(false);
   const [editUser, setEditUser] = useState({});
+  const [searchText, setSearchText] = useState('');
+  const [debounceTimer, setDebounceTimer] = useState(0);
+  const [AllChecked, setAllChecked] = useState(false);
 
   // fetch the api for user data
   const fetchAPI = async () => {
@@ -68,11 +72,15 @@ const Users = () => {
     setUserData(updatedUserData);
     localStorage.setItem('userData', JSON.stringify(updatedUserData));
     setCurrentPage(JSON.parse(localStorage.getItem('currentPage')));
+    setSearchText('');
+    setEdit(false);
   };
 
   //Restore data
   const handleRestore = () => {
     fetchAPI();
+    setAllChecked(false);
+    setSearchText('');
   };
 
   // handle edit click for a single user
@@ -123,17 +131,141 @@ const Users = () => {
     setEdit(false);
   };
 
+  // set current page number on click
+  const handlePageNumber = (pageNumber) => {
+    if (editUser.isEdited) {
+      handleEditCancel(editUser.id);
+    }
+    setCurrentPage(pageNumber);
+    localStorage.setItem('currentPage', JSON.stringify(pageNumber));
+  };
+
+  // search text
+  const searchInputText = (text) => {
+    if (text.length) {
+      const searchedUserData = userData.filter((user) => {
+        return (
+          user.name.toLowerCase() === text.toLowerCase() ||
+          user.name.split(' ')[0].toLowerCase() === text.toLowerCase() ||
+          user.name.split(' ')[1].toLowerCase() === text.toLowerCase() ||
+          user.email.toLowerCase() === text.toLowerCase() ||
+          user.email.split('@')[0].toLowerCase() === text.toLowerCase() ||
+          user.role.toLowerCase() === text.toLowerCase()
+        );
+      });
+
+      if (searchedUserData.length) {
+        setCurrentPage(1);
+        setUserData(searchedUserData);
+      } else {
+        alert('User not found');
+        setSearchText('');
+        setUserData(JSON.parse(localStorage.getItem('userData')));
+      }
+    } else {
+      setUserData(JSON.parse(localStorage.getItem('userData')));
+    }
+  };
+
+  // debounce for search optimization
+  const debounceSearch = (event, debounceTimeout) => {
+    if (debounceTimer !== 0) {
+      clearTimeout(debounceTimer);
+    }
+    const timerId = setTimeout(() => searchInputText(event), debounceTimeout);
+    setDebounceTimer(timerId);
+  };
+
+  //handle search using debouncing
+  const handleSearch = (text) => {
+    if (editUser.isEdited === true) {
+      alert('Can not search while editing');
+    } else {
+      setSearchText(text);
+      debounceSearch(text, 1000);
+    }
+  };
+
+  //single checkbox selection to select and unselect the user
+  const handleCheckedSingle = (userId) => {
+    const updateChecked = userData.map((user) => {
+      if (user.id === userId) {
+        return { ...user, isChecked: !user.isChecked };
+      }
+      return user;
+    });
+
+    let checkStatus = true;
+    for (let check = indexOfFirstUser; check < indexOfLastUser; check++) {
+      if (updateChecked[check].isChecked !== true) {
+        checkStatus = false;
+        break;
+      }
+    }
+
+    setUserData(updateChecked);
+    setAllChecked(checkStatus);
+  };
+
+  //handle selection of all checkboxes
+  const handleAllChecked = () => {
+    setAllChecked(!AllChecked);
+    let updateAllChecked;
+    if (!AllChecked) {
+      updateAllChecked = userData.map((user, idx) => {
+        if (indexOfFirstUser <= idx && indexOfLastUser > idx) {
+          return { ...user, isChecked: true };
+        }
+        return { ...user, isChecked: false };
+      });
+    } else {
+      updateAllChecked = userData.map((user, idx) => {
+        if (indexOfFirstUser <= idx && indexOfLastUser > idx) {
+          return { ...user, isChecked: false };
+        }
+        return user;
+      });
+    }
+    setUserData(updateAllChecked);
+  };
+
+  //delete the all selected checkbox on the current page only
+  const handleDeleteSelected = () => {
+    if (editUser.isEdited === true) {
+      alert('Please save or cancel the edited changes');
+    } else {
+      const afterDeletedUser = userData.filter((user) => {
+        return user.isChecked === false;
+      });
+
+      setUserData(afterDeletedUser);
+      localStorage.setItem('userData', JSON.stringify(afterDeletedUser));
+      setAllChecked(false);
+    }
+  };
+
   return (
     <div>
-      <Header handleRestore={handleRestore} />
+      <Header
+        handleRestore={handleRestore}
+        searchText={searchText}
+        handleSearch={handleSearch}
+      />
       <div className="user-container">
         <table className="user-list">
           <thead className="table-head">
             <tr>
               <th>
                 <div className="checkbox-container">
-                  <input type="checkbox" id="checkbox" />
-                  <label htmlFor="checkbox"></label>
+                  <input
+                    type="checkbox"
+                    id="checkboxAll"
+                    style={{ width: '16px', height: '16px' }}
+                    value={AllChecked}
+                    checked={AllChecked}
+                    onChange={handleAllChecked}
+                  />
+                  <label htmlFor="checkboxAll"></label>
                 </div>
               </th>
               <th>Name</th>
@@ -151,9 +283,25 @@ const Users = () => {
               setEditUser={setEditUser}
               handleEditSave={handleEditSave}
               handleEditCancel={handleEditCancel}
+              handleCheckedSingle={handleCheckedSingle}
             />
           </tbody>
         </table>
+      </div>
+      <div className="delete-selection-row">
+        <button
+          type="button"
+          className="delete-selected-button"
+          onClick={handleDeleteSelected}
+        >
+          Delete Selected
+        </button>
+        <Pagination
+          userPerPage={userPerPage}
+          totalUsers={userData.length}
+          handlePageNumber={handlePageNumber}
+        />
+        <div style={{ color: 'white', width: '12%' }}>{}</div>
       </div>
     </div>
   );

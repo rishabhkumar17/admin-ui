@@ -1,8 +1,128 @@
 .save-button {
-  font-size: 16px;
-  width: 50px;
-  height: 30px;
   color: white;
-  background-color: blue;
-  border: 1px solid blue;
+  background-color: #3a5cbf;
+  border: 1px solid #3a5cbf;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+.save-button:hover {
+  background-color: white;
+  color: #3a5cbf;
+}
+
+.cancel-button {
+  color: white;
+  background-color: red;
+  border: 1px solid red;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: white;
+  color: red;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-container label {
+  cursor: pointer;
+  display: flex;
+}
+
+.checkbox-container input[type='checkbox'] {
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-container label::before {
+  content: '';
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 0.15em;
+  margin-left: 0.2em;
+  margin-right: 0.5em;
+  border: 0.05em solid rgb(149, 145, 145);
+}
+
+.checkbox-container label:hover::before,
+.checkbox-container input[type='checkbox']:hover + label::before {
+  background-color: #dcdae1;
+}
+
+.checkbox-container input[type='checkbox']:disabled + label,
+.checkbox-container input[type='checkbox']:disabled {
+  color: #aaa;
+  cursor: default;
+}
+
+.checkbox-container input[type='checkbox']:checked + label::before {
+  content: '\002714';
+  background-color: #3a5cbf;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.checkbox-container input[type='checkbox']:disabled + label::before {
+  background-color: #ccc;
+  border-color: #999;
+}
+
+.edit-name,
+.edit-email,
+.edit-role {
+  padding: 0.2rem;
+  overflow-x: scroll;
+}
+
+@media screen and (max-width: 768px) {
+  .save-button {
+    width: 3.5rem;
+    font-size: 12px;
+  }
+
+  .cancel-button {
+    width: 3.5rem;
+    font-size: 12px;
+  }
+
+  .mobile-action {
+    text-align: center;
+  }
+
+  .edit-name {
+    width: 6rem;
+    word-break: break-all;
+  }
+  .edit-email {
+    width: 10rem;
+    word-break: break-all;
+  }
+  .edit-role {
+    width: 5rem;
+    word-break: break-all;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .edit-name {
+    width: 4rem;
+    word-break: break-all;
+  }
+  .edit-email {
+    width: 6rem;
+    word-break: break-all;
+  }
+  .edit-role {
+    width: 3rem;
+    word-break: break-all;
+  }
 }

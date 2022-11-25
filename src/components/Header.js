@@ -1,6 +1,6 @@
 import './Header.css';
 
-const Header = ({ handleRestore }) => {
+const Header = ({ handleRestore, searchText, handleSearch }) => {
   return (
     <div className="header">
       <h2 className="header-title" onClick={handleRestore}>
@@ -10,6 +10,10 @@ const Header = ({ handleRestore }) => {
         placeholder="Search by name, email or role"
         name="search"
         className="search-bar"
+        value={searchText}
+        onChange={(e) => {
+          handleSearch(e.target.value);
+        }}
       />
     </div>
   );

@@ -1,0 +1,41 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrow {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  box-sizing: border-box;
+  width: 2em;
+  height: 2em;
+  color: white;
+  background-color: #3a5cbf;
+  border: 2px solid #3a5cbf;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 1em;
+}
+
+.arrow-selected {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  box-sizing: border-box;
+  width: 2em;
+  height: 2em;
+  color: #3a5cbf;
+  background-color: white;
+  border: 2px solid #3a5cbf;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 1em;
+}
+
+@media screen and (max-width: 600px) {
+  .mobile-page {
+    display: none;
+  }
+}

@@ -1,5 +1,6 @@
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 import DeleteOutlineSharpIcon from '@mui/icons-material/DeleteOutlineSharp';
+import './UserData.css';
 
 const UserData = ({
   userData,
@@ -9,15 +10,26 @@ const UserData = ({
   setEditUser,
   handleEditSave,
   handleEditCancel,
+  handleCheckedSingle,
 }) => {
   return userData.map((user) => {
     return (
-      <tr key={user.id} style={{ height: '50px' }}>
+      <tr
+        key={user.id}
+        style={{
+          height: '45px',
+          backgroundColor: user.isChecked ? '#f0f0f5' : '',
+        }}
+      >
         {user.isEdited ? (
           <>
             <td>
               <div className="checkbox-container">
-                <input type="checkbox" id={`edited-checkbox${user.id}`} />
+                <input
+                  type="checkbox"
+                  id={`edited-checkbox${user.id}`}
+                  style={{ width: '16px', height: '16px' }}
+                />
                 <label htmlFor={`edited-checkbox${user.id}`}></label>
               </div>
             </td>
@@ -75,17 +87,24 @@ const UserData = ({
           </>
         ) : (
           <>
-            {' '}
             <td>
               <div className="checkbox-container">
-                <input type="checkbox" id={`checkbox${user.id}`} />
+                <input
+                  type="checkbox"
+                  id={`checkbox${user.id}`}
+                  style={{ width: '16px', height: '16px' }}
+                  className="check-box"
+                  value={user.isChecked}
+                  checked={user.isChecked}
+                  onChange={() => handleCheckedSingle(user.id)}
+                />
                 <label htmlFor={`checkbox${user.id}`}></label>
               </div>
             </td>
             <td style={{ textTransform: 'capitalize' }}>{user.name}</td>
             <td>{user.email}</td>
             <td style={{ textTransform: 'capitalize' }}>{user.role}</td>
-            <td>
+            <td className="mobile-action">
               <EditSharpIcon
                 onClick={() => handleEdit(user.id)}
                 sx={{ cursor: 'pointer' }}
